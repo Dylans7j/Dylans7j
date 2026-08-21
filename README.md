@@ -1,44 +1,45 @@
-<div align="center">
-
 # `D4RKGUNN3R // SECURITY OPERATIONS`
 
 ### Dylan Senez
 
-`CYBERSECURITY` · `ACTIVE DIRECTORY` · `SOC` · `PENETRATION TESTING` · `SECURITY ENGINEERING`
+`CYBERSECURITY` · `ACTIVE DIRECTORY` · `SOC` · `DETECTION ENGINEERING` · `PENETRATION TESTING`
 
 > **Build the lab. Attack the system. Detect the activity. Document the findings.**
 
-</div>
-
 ---
 
-```text
+```
 ╔══════════════════════════════════════════════════════════════════════╗
 ║  // OPERATOR PROFILE                              REF // D4RK-01     ║
 ╠══════════════════════════════════════════════════════════════════════╣
 ║                                                                      ║
 ║  OPERATOR ........ Dylan Senez                                       ║
 ║  HANDLE .......... d4rkgunn3r                                        ║
+║  CALLSIGN ........ D4RKGUNN3R                                        ║
 ║  DISCIPLINE ...... Cybersecurity / Computer Science                  ║
-║  PRIMARY FOCUS ... Security Operations • Active Directory           ║
-║  SECONDARY ....... Penetration Testing • Detection Engineering      ║
-║  LAB ............. Windows AD • Kali • Microsoft Sentinel           ║
+║  PRIMARY FOCUS ... Security Operations • Detection Engineering      ║
+║  SECONDARY ....... Active Directory • Penetration Testing           ║
+║  LAB ............. Windows AD • Kali • Microsoft Sentinel • Splunk  ║
 ║  TRAINING ........ Hack The Box • Home Lab • Security Research      ║
 ║  PLATFORM ........ Kali Linux • Windows • Azure • Docker            ║
+║  VETERAN ......... USCG (6 years, Gunner's Mate GM2)                ║
+║  BUSINESS ........ Anchor Watch Security Consulting                 ║
 ║                                                                      ║
 ║  MISSION ......... Learn the attack. Detect the attack.              ║
-║                    Understand the system. Document everything.        ║
+║                    Understand the system. Secure the enterprise.      ║
 ║                                                                      ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+---
+
 # `// WHOAMI`
 
-Computer Science student focused on developing practical cybersecurity skills through hands-on security operations, Active Directory environments, penetration testing, detection engineering, and adversary simulation.
+Computer Science student and USCG veteran focused on **practical cybersecurity operations** through hands-on security operations, Active Directory environments, penetration testing, and **detection engineering**. Building expertise in the complete attack-to-detection cycle.
 
-My goal is to understand an intrusion from both sides:
+My goal is to understand an intrusion from **both sides simultaneously:**
 
-```text
+```
 ATTACK
    │
    ▼
@@ -55,9 +56,21 @@ RESPONSE
    │
    ▼
 DOCUMENTATION
+   │
+   ▼
+AUTOMATION
 ```
 
-I build environments where I can generate attacks, collect the resulting telemetry, investigate what happened, engineer detections, and document the entire process.
+I build **isolated enterprise environments** where I can:
+1. **Execute** realistic attacks against Windows Active Directory
+2. **Generate** attack telemetry (Sysmon, Event Logs, Network traffic)
+3. **Collect** logs in SIEM (Microsoft Sentinel, Splunk)
+4. **Engineer** detection rules from first principles
+5. **Hunt** for indicators of compromise
+6. **Investigate** attacks like a SOC analyst
+7. **Document** everything to understand **why detection works**
+
+The objective: **Turn every attack into a detection learning opportunity.**
 
 ---
 
@@ -65,71 +78,86 @@ I build environments where I can generate attacks, collect the resulting telemet
 
 ## 🛡️ SOC / ACTIVE DIRECTORY HOME LAB
 
-Building an isolated enterprise-style cybersecurity lab designed to simulate attacks against a Windows Active Directory environment and analyze the resulting telemetry.
+Building an isolated enterprise-style cybersecurity lab designed to simulate real-world Windows Active Directory attacks and develop Microsoft Sentinel / Splunk detection capabilities.
 
 ### Infrastructure
 
-```text
-                    ┌─────────────────────────┐
-                    │   MICROSOFT SENTINEL    │
-                    │    SIEM / ANALYTICS     │
-                    └────────────┬────────────┘
-                                 │
-                          LOG / TELEMETRY
-                                 │
-                ┌────────────────┴────────────────┐
-                │                                 │
-                ▼                                 ▼
-       ┌─────────────────┐              ┌─────────────────┐
-       │      DC-01      │              │     WIN-01      │
-       │ Windows Server  │◄────────────►│ Windows Client  │
-       │ Active Directory│              │  Domain Joined  │
-       └────────┬────────┘              └─────────────────┘
-                │
-                │ ATTACK / ENUMERATION
-                ▼
-       ┌─────────────────┐
-       │     KALI-01     │
-       │ Attacker System │
-       └─────────────────┘
+```
+             ┌─────────────────────────┐
+             │   MICROSOFT SENTINEL    │
+             │    SIEM / ANALYTICS     │
+             └────────────┬────────────┘
+                          │
+                   LOG / TELEMETRY
+                          │
+         ┌────────────────┼────────────────┐
+         │                │                │
+         ▼                ▼                ▼
+    ┌─────────┐    ┌─────────┐    ┌─────────────┐
+    │ SPLUNK  │    │   DC-01 │    │   WIN-01    │
+    │  SIEM   │    │ Windows │    │  Windows    │
+    │         │    │ Server  │    │  Client     │
+    │ (Dual   │    │   AD    │    │  Domain     │
+    │  SIEM)  │    │   +     │    │  Joined     │
+    └─────────┘    │ Sysmon  │    │             │
+                   │   +     │    │  Sysmon     │
+                   │ Azure   │    │  Telemetry  │
+                   │ Monitor │    └─────────────┘
+                   │ Agent   │
+                   └────┬────┘
+                        │
+                   ATTACK / ENUMERATION
+                        │
+                        ▼
+                   ┌──────────────┐
+                   │   KALI-01    │
+                   │  Attacker    │
+                   │  System      │
+                   └──────────────┘
 ```
 
 ### Environment
 
-- Windows Server Domain Controller
-- Windows domain workstation
-- Kali Linux attacker machine
-- Microsoft Azure
-- Microsoft Sentinel
-- Azure Monitor Agent
-- Windows Security Event Logs
-- Sysmon
-- VMware
-- Docker
+- **Domain Controller:** Windows Server 2022 with Active Directory
+- **Workstation:** Windows 10 domain-joined client
+- **Attacker:** Kali Linux for reconnaissance, enumeration, attacks
+- **SIEM Stack:**
+  - Microsoft Sentinel (Azure-based SIEM)
+  - Splunk Enterprise (alternative SIEM for detection comparison)
+- **Telemetry Collection:**
+  - Sysmon (process execution, network connections, DNS queries)
+  - Azure Monitor Agent
+  - Splunk Universal Forwarder
+  - Windows Security Event Logs
+- **Infrastructure:** VMware host-only network (isolated), Docker
 
-### Offensive Testing
+### Offensive Testing Capability
 
-- Active Directory enumeration
-- LDAP reconnaissance
-- SMB enumeration
-- Password spraying
-- Kerberos attacks
-- Credential attacks
-- BloodHound analysis
-- Windows lateral movement
-- Authentication testing
+- Active Directory enumeration (LDAP, SMB, RPC)
+- User and domain reconnaissance
+- Kerberos attacks (Kerberoasting, AS-REP Roasting, Golden Tickets)
+- Credential attacks (password spraying, brute force, credential stuffing)
+- BloodHound / SharpHound analysis
+- Lateral movement techniques
+- Post-exploitation
+- Windows privilege escalation
+- Authentication attacks (NTLM relay, Pass-the-Hash, etc.)
 
-### Defensive Analysis
+### Defensive Analysis Capability
 
-- Microsoft Sentinel
-- KQL hunting
-- Windows Event Logs
-- Sysmon telemetry
-- Authentication investigation
-- Detection engineering
-- Alert triage
-- IOC correlation
-- MITRE ATT&CK mapping
+- **SIEM:** Microsoft Sentinel + KQL, Splunk + SPL
+- **Detection Engineering:** Rule development from attack telemetry
+- **Threat Hunting:** Proactive IOC correlation and pattern detection
+- **Log Analysis:**
+  - Windows Security Event Logs (4624, 4625, 4769, 4768, 4672, etc.)
+  - Sysmon telemetry (Process execution, DNS queries, network connections, file operations)
+  - Azure Monitor events
+- **Investigation Workflows:**
+  - Timeline correlation
+  - Evidence collection
+  - MITRE ATT&CK mapping
+  - Impact assessment
+- **Alert Triage & Response**
 
 ### Repository
 
@@ -137,43 +165,151 @@ Building an isolated enterprise-style cybersecurity lab designed to simulate att
 
 ---
 
-# `// ATTACK → DETECT`
+# `// DETECTION ENGINEERING`
 
-My lab methodology connects offensive actions directly to defensive telemetry.
+My **core focus this year:** Build a library of detection rules for the entire Windows attack kill chain.
 
-```text
+### Attack → Detection Methodology
+
+Each attack scenario follows this pattern:
+
+```
+┌────────────────────┐
+│  ATTACK TECHNIQUE  │  (e.g., Kerberoasting)
+│  (MITRE ATT&CK)    │
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐
+│     EXECUTE        │  (Run Rubeus, net.exe, etc.)
+│   THE ATTACK       │
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐
+│  COLLECT TELEMETRY │  (Event ID 4769, Sysmon)
+│  FROM BOTH SIEMs   │
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐
+│  DEVELOP QUERIES   │  (KQL + SPL)
+│  (Sentinel + Splunk)
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐
+│   VALIDATE IN LAB  │  (Reproduce detection)
+│  AGAINST LIVE ATK  │
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐
+│   GITHUB COMMIT    │  (Document everything)
+│   & DOCUMENTATION  │
+└────────────────────┘
+```
+
+
+
+### Detection Engineering Workflow
+
+```
+UNDERSTAND THE ATTACK
+  ├── Read attack documentation
+  ├── Study MITRE ATT&CK technique
+  └── Review event log generation
+
+EXECUTE IN LAB
+  ├── Prepare attack tools
+  ├── Clear logs / baseline telemetry
+  ├── Run attack
+  └── Collect all generated events
+
+ANALYZE TELEMETRY
+  ├── Review Windows Event Logs
+  ├── Inspect Sysmon data
+  ├── Check network traffic
+  └── Correlate across sources
+
+DEVELOP QUERIES
+  ├── Write KQL (Sentinel)
+  ├── Write SPL (Splunk)
+  ├── Test false positives
+  └── Validate detection
+
+DOCUMENTATION
+  ├── Attack explanation
+  ├── Query logic
+  ├── Event IDs involved
+  ├── Remediation steps
+  └── GitHub commit
+```
+
+---
+
+# `// ATTACK → DETECT FLOWCHART`
+
+How attacks are converted into detections:
+
+```
 ┌────────────────────┐
 │  ATTACK TECHNIQUE  │
+│   (Kerberoasting)  │
 └─────────┬──────────┘
           │
           ▼
 ┌────────────────────┐
-│     TELEMETRY      │
-│ Event Logs / Sysmon│
+│ ATTACK EXECUTION   │
+│ (rubeus.exe       │
+│  kerberoast)      │
 └─────────┬──────────┘
           │
           ▼
 ┌────────────────────┐
-│      SIEM / KQL    │
-│ Microsoft Sentinel │
+│   TELEMETRY GEN    │
+│  Event ID 4769:    │
+│  "Kerberos service │
+│   ticket request"  │
 └─────────┬──────────┘
           │
           ▼
 ┌────────────────────┐
-│     DETECTION      │
-│ Rule / Hunt / Alert│
+│ SIEM COLLECTION    │
+│ Sentinel ingest    │
+│ Splunk forward     │
 └─────────┬──────────┘
           │
           ▼
 ┌────────────────────┐
-│   INVESTIGATION    │
-│ Correlate Evidence │
+│    DETECTION       │
+│    LOGIC           │
+│ KQL: EventID 4769  │
+│  | stats by user   │
+│  | > 5 per hour    │
 └─────────┬──────────┘
           │
           ▼
 ┌────────────────────┐
-│      REPORTING     │
-│ Impact / Remediate │
+│     ALERT          │
+│ "Suspected         │
+│  Kerberoasting"    │
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐
+│  INVESTIGATION     │
+│ Review context     │
+│ Confirm legitimate │
+│ vs attack          │
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐
+│    RESPONSE        │
+│ Containment        │
+│ Remediation        │
+│ Escalation         │
 └────────────────────┘
 ```
 
@@ -181,9 +317,9 @@ My lab methodology connects offensive actions directly to defensive telemetry.
 
 # `// OFFENSIVE SECURITY`
 
-My offensive-security workflow follows a structured penetration-testing methodology.
+My penetration-testing workflow follows structured PTES methodology:
 
-```text
+```
 RECONNAISSANCE
       │
       ▼
@@ -210,123 +346,165 @@ REPORTING
 
 ### Current Areas of Study
 
-- Network enumeration
-- Active Directory
-- Kerberos
-- LDAP
-- SMB
-- NTLM
-- BloodHound
-- PowerShell
+- Network enumeration & reconnaissance
+- Active Directory attack vectors
+- Kerberos protocol attacks
+- LDAP queries & enumeration
+- SMB enumeration
+- NTLM authentication attacks
+- BloodHound / graph analysis
+- PowerShell exploitation
 - Windows privilege escalation
 - Linux privilege escalation
+- Credential attacks & dumping
+- Lateral movement techniques
+- Access control abuse (ACL/DACL)
 - Web application security
-- Credential attacks
-- Lateral movement
-- Access-control abuse
+- API security
+- Cloud authentication attacks
 
-### Hack The Box
+### Hack The Box Progress
 
-[![Hack The Box](https://img.shields.io/badge/VIEW-HTB_WALKTHROUGHS-9FEF00?style=for-the-badge&logo=hackthebox&logoColor=black)](https://github.com/Dylans7j/HackTheBox-Walkthroughs)
+**HTB CJCA:** ✅ COMPLETE (Certified)  
+**CDSA Progress:** ~75% toward completion
+
+**HTB Boxes Completed:** 450+ (Mix of Easy/Medium/Hard)
 
 ---
 
 # `// ACTIVE DIRECTORY`
 
-```text
+Deep understanding of Windows AD environments and attack surface:
+
+```
 ACTIVE DIRECTORY
 │
 ├── Discovery
-│   ├── DNS
-│   ├── LDAP
-│   ├── SMB
-│   └── RPC
+│   ├── DNS enumeration
+│   ├── LDAP queries
+│   ├── SMB shares
+│   └── RPC services
 │
-├── Enumeration
-│   ├── Users
-│   ├── Groups
-│   ├── Computers
-│   ├── Shares
-│   └── Domain Trusts
+├── User & Group Enumeration
+│   ├── Domain users
+│   ├── Domain groups
+│   ├── Group memberships
+│   ├── Service accounts
+│   └── Privileged accounts
 │
-├── Graph Analysis
-│   └── BloodHound
+├── Computer & Trust Discovery
+│   ├── Computers in domain
+│   ├── Domain trusts
+│   ├── Cross-forest trusts
+│   └── External trusts
 │
-├── Kerberos
+├── Kerberos Analysis
 │   ├── AS-REP Roasting
-│   └── Kerberoasting
+│   ├── Kerberoasting
+│   ├── Ticket analysis
+│   └── Delegation attacks
 │
-├── Authentication
-│   ├── Password Spraying
-│   ├── NTLM
-│   └── Credential Attacks
+├── Authentication Attacks
+│   ├── Password spraying
+│   ├── Credential stuffing
+│   ├── Brute force
+│   ├── NTLM relay
+│   └── Responder poisoning
 │
-├── Access Control
-│   ├── ACL Analysis
-│   └── DACL Abuse
+├── Access Control Analysis
+│   ├── ACL enumeration
+│   ├── DACL abuse
+│   ├── Resource-based constraints
+│   └── Delegation analysis
 │
 ├── Lateral Movement
+│   ├── Pass-the-Hash
+│   ├── Pass-the-Ticket
+│   ├── Overpass-the-Hash
+│   ├── Kerberos delegation abuse
+│   └── Living off the land
 │
-└── Detection
-    ├── Event Logs
-    ├── Sysmon
-    ├── Sentinel
-    └── KQL
+├── Persistence & Privilege Escalation
+│
+├── Detection (The Defense Side)
+│   ├── Sysmon monitoring
+│   ├── Event Log analysis
+│   ├── SIEM detection rules
+│   ├── Threat hunting
+│   └── Alert triage
+│
+└── Remediation & Hardening
+    ├── Event log configuration
+    ├── Privileged account hardening
+    ├── Trust relationship review
+    └── Detection rule deployment
 ```
 
-The objective is not simply getting access.
-
-The objective is understanding **why the attack works, what telemetry it produces, how it can be detected, and how it should be remediated.**
+**Core Principle:** Never stop at exploitation. Understand **why each attack works, what evidence it leaves, how it can be detected, and how to prevent it.**
 
 ---
 
 # `// SECURITY OPERATIONS`
 
+SOC analyst workflow for processing and investigating security alerts:
+
 ### Investigation Workflow
 
-```text
+```
 ALERT
-  │
+  │ What triggered?
   ▼
 VALIDATE
-  │
+  │ Real or false positive?
   ▼
 COLLECT EVIDENCE
-  │
-  ▼
-CORRELATE EVENTS
-  │
+  │ What events are related?
   ▼
 BUILD TIMELINE
-  │
+  │ When did what happen?
   ▼
-IDENTIFY ATT&CK TECHNIQUE
-  │
+CORRELATE EVENTS
+  │ Connect the dots
   ▼
-DETERMINE IMPACT
-  │
+IDENTIFY TECHNIQUE
+  │ MITRE ATT&CK mapping
   ▼
-CONTAIN / REMEDIATE
-  │
+DETERMINE SCOPE
+  │ How many systems? Which users?
+  ▼
+ASSESS IMPACT
+  │ What data could be accessed?
+  ▼
+CONTAIN
+  │ Stop spread/persistence
+  ▼
+REMEDIATE
+  │ Remove attacker
   ▼
 DOCUMENT
+  │ Write full report
+  ▼
+PREVENT
+  │ Improve detection/hardening
 ```
 
 ### Current Defensive Focus
 
-- Microsoft Sentinel
-- KQL
-- Windows Security Events
-- Sysmon
+- Microsoft Sentinel (KQL queries, hunting, analytics rules)
+- Splunk (SPL queries, correlation, dashboards)
+- Windows Security Events (4624, 4625, 4634, 4672, 4768, 4769, etc.)
+- Sysmon monitoring (Process execution, DNS, network, file operations)
 - Active Directory telemetry
 - Authentication anomalies
 - Brute-force detection
 - Password-spray detection
 - Privilege escalation indicators
 - Lateral movement indicators
-- Detection engineering
-- Threat hunting
-- Incident reporting
+- **Detection engineering** (building queries from first principles)
+- Threat hunting (proactive pattern detection)
+- Incident reporting & documentation
+- MITRE ATT&CK framework mapping
+- Attack timeline reconstruction
 
 ---
 
@@ -334,43 +512,19 @@ DOCUMENT
 
 ## 🔴 Offensive
 
-![Kali Linux](https://img.shields.io/badge/Kali_Linux-557C94?style=for-the-badge&logo=kalilinux&logoColor=white)
-![Burp Suite](https://img.shields.io/badge/Burp_Suite-FF6633?style=for-the-badge&logo=burpsuite&logoColor=white)
+[![Kali Linux](https://img.shields.io/badge/Kali_Linux-557C94?style=for-the-badge&logo=kalilinux&logoColor=white)](https://img.shields.io/badge/Kali_Linux-557C94?style=for-the-badge&logo=kalilinux&logoColor=white) [![Burp Suite](https://img.shields.io/badge/Burp_Suite-FF6633?style=for-the-badge&logo=burpsuite&logoColor=white)](https://img.shields.io/badge/Burp_Suite-FF6633?style=for-the-badge&logo=burpsuite&logoColor=white)
 
-`Nmap`
-`NetExec`
-`BloodHound`
-`SharpHound`
-`RustHound`
-`Impacket`
-`Certipy`
-`Kerbrute`
-`Hashcat`
-`Gobuster`
-`FFUF`
-`Evil-WinRM`
-`Wireshark`
+`Nmap` `NetExec` `Impacket` `Certipy` `Rubeus` `BloodHound` `SharpHound` `RustHound` `Kerbrute` `Hashcat` `Gobuster` `FFUF` `Evil-WinRM` `Wireshark` `Responder` `LDAP query tools`
 
 ## 🔵 Defensive
 
-![Microsoft Azure](https://img.shields.io/badge/Microsoft_Azure-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)
-![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+[![Microsoft Azure](https://img.shields.io/badge/Microsoft_Azure-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)](https://img.shields.io/badge/Microsoft_Azure-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white) [![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
 
-`Microsoft Sentinel`
-`KQL`
-`Sysmon`
-`Windows Event Logs`
-`Azure Monitor Agent`
-`MITRE ATT&CK`
+`Microsoft Sentinel` `KQL (Kusto Query Language)` `Splunk Enterprise` `SPL (Splunk Search Processing Language)` `Sysmon` `Windows Event Logs` `Azure Monitor Agent` `MITRE ATT&CK Framework` `Elastic Stack` `Sigma rules`
 
-## 🟢 Engineering
+## 🟢 Engineering & Scripting
 
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![PowerShell](https://img.shields.io/badge/PowerShell-5391FE?style=for-the-badge&logo=powershell&logoColor=white)
-![Bash](https://img.shields.io/badge/Bash-121011?style=for-the-badge&logo=gnubash&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
-![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
+[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white) [![PowerShell](https://img.shields.io/badge/PowerShell-5391FE?style=for-the-badge&logo=powershell&logoColor=white)](https://img.shields.io/badge/PowerShell-5391FE?style=for-the-badge&logo=powershell&logoColor=white) [![Bash](https://img.shields.io/badge/Bash-121011?style=for-the-badge&logo=gnu-bash&logoColor=white)](https://img.shields.io/badge/Bash-121011?style=for-the-badge&logo=gnu-bash&logoColor=white) [![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) [![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white) [![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github)](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github)
 
 ---
 
@@ -378,150 +532,127 @@ DOCUMENT
 
 | Project | Objective | Technology |
 |---|---|---|
-| 🛡️ [SOC Active Directory Lab](https://github.com/Dylans7j/SOC-Lab) | Attack and defend a Windows domain environment | AD · Kali · Sentinel · Sysmon |
-| 🚩 [Hack The Box Walkthroughs](https://github.com/Dylans7j/HackTheBox-Walkthroughs) | Document penetration-testing methodology | Kali · Nmap · AD · Web |
-| 🎓 [CS499 ePortfolio](https://github.com/Dylans7j/CS499-ePortfolio) | Computer Science capstone portfolio | Software Engineering |
-| 🐧 [D4RKGUNN3R ZSH Setup](https://github.com/Dylans7j/d4rkgunn3r-zsh-Setup) | Linux terminal configuration | Linux · Bash · Zsh |
+| 🛡️ [SOC-Lab](https://github.com/Dylans7j/SOC-Lab) | Attack and defend a Windows AD environment + detection engineering | AD · Kali · Sentinel · Splunk · Sysmon |
+| 📚 [CHEATSHEETS](https://github.com/Dylans7j/CHEATSHEETS) | Comprehensive cybersecurity command reference & enumeration guide | Offense · Defense · Tools · Techniques |
+| 🚩 [HackTheBox-Walkthroughs](https://github.com/Dylans7j/HackTheBox-Walkthroughs) | Document penetration-testing methodology for each solved box | Kali · Nmap · Web · AD · Exploitation |
+| 🎓 [CS499-ePortfolio](https://github.com/Dylans7j/CS499-ePortfolio) | Computer Science capstone portfolio | Software Engineering · Security · Design |
+| 🐧 [d4rkgunn3r-zsh-Setup](https://github.com/Dylans7j/d4rkgunn3r-zsh-Setup) | Linux terminal configuration and productivity tools | Linux · Bash · Zsh · Vim |
 
 ---
 
 # `// LAB DOCUMENTATION STANDARD`
 
-Every major security project should answer six questions:
+Every major security finding should answer six critical questions:
 
-```text
+```
 01 // WHAT WAS BUILT?
+    Describe the attack, technique, or system being tested
 
 02 // WHAT WAS TESTED?
+    Specific scenario, prerequisites, initial conditions
 
 03 // HOW WAS IT TESTED?
+    Step-by-step commands and procedures
 
 04 // WHAT EVIDENCE WAS GENERATED?
+    Event IDs, Sysmon events, logs, network traffic
 
 05 // HOW WAS IT DETECTED?
+    SIEM queries (KQL/SPL), detection logic, alert mechanism
 
 06 // HOW SHOULD IT BE REMEDIATED?
+    Defensive measures, hardening steps, monitoring improvements
 ```
 
-Example finding structure:
+Example structure for each lab module:
 
-```text
-FINDING
-│
-├── Description
-├── Evidence
-├── Attack Path
-├── Technical Impact
+```
+ATTACK SCENARIO
+├── Description & Context
 ├── MITRE ATT&CK Mapping
-├── Detection
-└── Remediation
+├── Prerequisites & Setup
+├── Attack Execution Steps
+├── Generated Telemetry (Events, Logs, Sysmon)
+├── Detection Queries
+│   ├── Sentinel KQL
+│   ├── Splunk SPL
+│   └── Alert Logic
+├── Investigation Evidence
+└── Remediation & Hardening
 ```
 
 ---
 
 # `// CERTIFICATIONS & TRAINING`
 
-```text
-┌─────────────────────────────────────────────────────┐
-│ CERTIFICATION / TRAINING                 STATUS     │
-├─────────────────────────────────────────────────────┤
-│ HTB CJCA                                  COMPLETE   │
-│ Hack The Box Academy                     ACTIVE     │
-│ Active Directory Security                ACTIVE     │
-│ Microsoft Sentinel                       ACTIVE     │
-│ Detection Engineering                    ACTIVE     │
-│ Penetration Testing                      ACTIVE     │
-└─────────────────────────────────────────────────────┘
+```
+┌──────────────────────────────────────────────────────┐
+│ CREDENTIAL / TRAINING            STATUS              │
+├──────────────────────────────────────────────────────┤
+│ HTB CJCA                          ✅ COMPLETE         │
+│ Hack The Box SOC Analyst Path     🔴 74.9% ACTIVE    │
+│ CompTIA Security+ (Planned)       📋 Q4 2026          │
+│ Active Directory Attacks          ✅ MASTERED         │
+│ Microsoft Sentinel & KQL          ✅ ADVANCED         │
+│ Detection Engineering             ✅ DEVELOPING       │
+│ Kerberos & Authentication         ✅ ADVANCED         │
+│ Penetration Testing Methodology   ✅ INTERMEDIATE     │
+│ SIEM Operations (Splunk)          ✅ INTERMEDIATE     │
+│ Threat Hunting                    🔴 ACTIVE           │
+└──────────────────────────────────────────────────────┘
 ```
 
 ---
 
-# `// CURRENT OBJECTIVES`
+# `// PROFESSIONAL EXPERIENCE`
 
-```text
-[01] Build an enterprise-style Active Directory security lab
-
-[02] Generate realistic attack telemetry
-
-[03] Develop Microsoft Sentinel detections
-
-[04] Improve KQL threat-hunting capability
-
-[05] Deepen Active Directory attack knowledge
-
-[06] Build repeatable penetration-testing methodology
-
-[07] Document professional-quality security findings
-
-[08] Develop security automation
-
-[09] Expand the cybersecurity project portfolio
-
-[10] Bridge offensive techniques with defensive detection
+```
+┌──────────────────────────────────────────────────────┐
+│ ROLE / POSITION              ORGANIZATION            │
+├──────────────────────────────────────────────────────┤
+│ Security Officer             Stratus (Bridge Role)   │
+│ USCG Gunner's Mate GM2       U.S. Coast Guard        │
+│   (Weapons, Ordnance, Sec)   (6 Years Service)       │
+│                                                      
+└──────────────────────────────────────────────────────┘
 ```
 
----
-
-# `// OPERATING PRINCIPLES`
-
-```text
-01 // Understand the system before attacking it.
-
-02 // Enumeration beats guessing.
-
-03 // Every attack should create evidence.
-
-04 // Never trust a single indicator.
-
-05 // Correlate telemetry.
-
-06 // Validate assumptions.
-
-07 // Document commands and evidence.
-
-08 // Explain impact, not just exploitation.
-
-09 // Make the process repeatable.
-
-10 // Hold the standard.
-```
+**Anchor Watch Security Consulting:** Building custom security assessments, threat modeling, and detection engineering for organizations.
 
 ---
 
 # `// GITHUB ACTIVITY`
 
-<div align="center">
-
-<img height="170" src="https://github-readme-stats.vercel.app/api?username=Dylans7j&show_icons=true&theme=transparent&hide_border=true" />
-
-<img height="170" src="https://github-readme-stats.vercel.app/api/top-langs/?username=Dylans7j&layout=compact&theme=transparent&hide_border=true" />
-
-</div>
+[![](https://github-readme-stats.vercel.app/api?username=Dylans7j&show_icons=true&theme=transparent&hide_border=true)](https://github-readme-stats.vercel.app/api?username=Dylans7j&show_icons=true&theme=transparent&hide_border=true) [![](https://github-readme-stats.vercel.app/api/top-langs/?username=Dylans7j&layout=compact&theme=transparent&hide_border=true)](https://github-readme-stats.vercel.app/api/top-langs/?username=Dylans7j&layout=compact&theme=transparent&hide_border=true)
 
 ---
 
 # `// CONNECT`
 
-<div align="center">
-
 [![GitHub](https://img.shields.io/badge/GitHub-Dylans7j-181717?style=for-the-badge&logo=github)](https://github.com/Dylans7j)
 
-</div>
-
-```text
+```
 OPERATOR ....... Dylan Senez
 HANDLE ......... d4rkgunn3r
+CALLSIGN ....... D4RKGUNN3R
 DISCIPLINE ..... Cybersecurity / Computer Science
-FOCUS .......... SOC • Active Directory • Offensive Security
+FOCUS .......... Security Operations • Detection Engineering
 LOCATION ....... Michigan
+VETERAN ........ USCG (GM2) • 6 Years Service
+BUSINESS ....... Anchor Watch Security Consulting
 ```
 
 ---
 
-<div align="center">
-
-## `// END TRANSMISSION`
+# `// END TRANSMISSION`
 
 ### `BUILD // ATTACK // DETECT // DOCUMENT // REPEAT`
 
-</div>
+```
+Detection Engineering:
+Every attack teaches something.
+Every detection prevents something.
+Every remediation hardens everything.
+
+Stay curious. Stay disciplined. Stay sharp.
+```
