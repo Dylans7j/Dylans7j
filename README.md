@@ -50,12 +50,15 @@ Current documented work includes:
 
 **Investigation and reporting:** event correlation, timeline development, ATT&CK mapping, evidence indexes, findings and remediation
 
-## Credentials
+## Credentials and training
 
 - B.S. Computer Science, Information Security — Southern New Hampshire University
 - HTB Certified Junior Cybersecurity Associate
-- HTB Certified Defensive Security Analyst learning path completed
+- Completed HTB job-role paths: SOC Analyst (CDSA), Penetration Tester (CPTS), Web Penetration Tester (CWES), and Junior Cybersecurity Analyst (CJCA)
+- CompTIA Security+ Preparation: 12.9%
 - U.S. Coast Guard veteran
+
+[View the complete training record](./TRAINING.md)
 
 ## Working standard
 
