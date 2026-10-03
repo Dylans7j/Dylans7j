@@ -55,7 +55,7 @@ Current documented work includes:
 - B.S. Computer Science, Information Security — Southern New Hampshire University
 - HTB Certified Junior Cybersecurity Associate
 - Completed HTB job-role paths: SOC Analyst (CDSA), Penetration Tester (CPTS), Web Penetration Tester (CWES), and Junior Cybersecurity Analyst (CJCA)
-- CompTIA Security+ Preparation: 12.9%
+- CompTIA Security+ Preparation: in progress
 - U.S. Coast Guard veteran
 
 [View the complete training record](./TRAINING.md)
